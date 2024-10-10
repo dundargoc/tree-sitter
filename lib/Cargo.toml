@@ -31,6 +31,9 @@ include = [
   "/include/tree_sitter/api.h",
 ]
 
+[lints]
+workspace = true
+
 [features]
 default = ["std"]
 std = ["regex/std", "regex/perf", "regex-syntax/unicode"]
@@ -43,7 +46,7 @@ tree-sitter-language = { version = "0.1", path = "language" }
 streaming-iterator = "0.1.9"
 
 [dependencies.wasmtime-c-api]
-version = "25.0.1"
+version = "25.0.2"
 optional = true
 package = "wasmtime-c-api-impl"
 default-features = false

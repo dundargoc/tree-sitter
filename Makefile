@@ -63,8 +63,8 @@ endif
 
 tree-sitter.pc: lib/tree-sitter.pc.in
 	sed -e 's|@PROJECT_VERSION@|$(VERSION)|' \
-		-e 's|@CMAKE_INSTALL_LIBDIR@|$(LIBDIR:$(PREFIX)/%=%)|' \
-		-e 's|@CMAKE_INSTALL_INCLUDEDIR@|$(INCLUDEDIR:$(PREFIX)/%=%)|' \
+		-e 's|@CMAKE_INSTALL_LIBDIR@|$(LIBDIR)|' \
+		-e 's|@CMAKE_INSTALL_INCLUDEDIR@|$(INCLUDEDIR)|' \
 		-e 's|@PROJECT_DESCRIPTION@|$(DESCRIPTION)|' \
 		-e 's|@PROJECT_HOMEPAGE_URL@|$(HOMEPAGE_URL)|' \
 		-e 's|@CMAKE_INSTALL_PREFIX@|$(PREFIX)|' $< > $@
@@ -95,13 +95,13 @@ uninstall:
 ##### Dev targets #####
 
 test:
-	script/fetch-fixtures
-	script/generate-fixtures
-	script/test
+	cargo xtask fetch-fixtures
+	cargo xtask generate-fixtures
+	cargo xtask test
 
 test_wasm:
-	script/generate-fixtures-wasm
-	script/test-wasm
+	cargo xtask generate-fixtures-wasm
+	cargo xtask test-wasm
 
 lint:
 	cargo update --workspace --locked --quiet
