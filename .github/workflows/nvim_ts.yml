@@ -57,12 +57,15 @@ jobs:
           cmake --install build
           # echo "VIMRUNTIME=${{ github.workspace }}/neovim/runtime" >> "$GITHUB_ENV"
 
-      - run: echo "$INSTALL_PREFIX/bin" >> "$GITHUB_PATH"
-        shell: bash
+      - if: runner.os != 'Windows'
+        run: echo "$INSTALL_PREFIX/bin" >> "$GITHUB_PATH"
+
+      - if: runner.os == 'Windows'
+        run: echo "$INSTALL_PREFIX/bin" >> $env:GITHUB_PATH
 
       - run: ls "$INSTALL_PREFIX"
       - run: ls "$INSTALL_PREFIX/bin"
-      - run: cat "$GITHUB_PATH"
+      - run: echo "$GITHUB_PATH"
         shell: bash
 
       - name: Clone nvim-treesitter
