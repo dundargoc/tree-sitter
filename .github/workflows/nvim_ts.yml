@@ -31,6 +31,12 @@ jobs:
       NVIM_TS_DIR: nvim-treesitter
     steps:
       - uses: actions/checkout@v6
+      - name: Clone Neovim
+        uses: actions/checkout@v6
+        with:
+          repository: neovim/neovim
+          path: ${{ env.NVIM_DIR }}
+
       - uses: actions-rust-lang/setup-rust-toolchain@v1
       - run: cargo build --profile optimize
       - if: runner.os != 'Windows'
@@ -38,15 +44,10 @@ jobs:
       - if: runner.os == 'Windows'
         run: echo ${{ github.workspace }}/target/optimize >> "$env:GITHUB_PATH"
 
-      - if: runner.os != 'Windows'
-        name: Clone Neovim
-        uses: actions/checkout@v6
-        with:
-          repository: neovim/neovim
-          path: ${{ env.NVIM_DIR }}
+      - if: runner.os == 'Windows'
+        run: ${{ env.NVIM_DIR }}/.github/scripts/env.ps1
 
-      - if: runner.os != 'Windows'
-        name: Build Neovim
+      - name: Build Neovim
         working-directory: ${{ env.NVIM_DIR }}
         run: |
           cmake -S cmake.deps -B .deps -G Ninja -D CMAKE_BUILD_TYPE=Release -D TREESITTER_URL=https://github.com/tree-sitter/tree-sitter/archive/${{ github.event.pull_request.head.sha }}.tar.gz -D DEPS_IGNORE_SHA=TRUE
@@ -61,11 +62,6 @@ jobs:
         with:
           repository: nvim-treesitter/nvim-treesitter
           path: ${{ env.NVIM_TS_DIR }}
-
-      - if: runner.os == 'Windows'
-        name: Install and prepare Neovim
-        run: bash ./scripts/ci-install.sh
-        working-directory: ${{ env.NVIM_TS_DIR }}
 
       - if: matrix.type == 'generate'
         name: Generate and compile parsers
