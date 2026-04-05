@@ -38,8 +38,8 @@ jobs:
           repository: neovim/neovim
           path: ${{ env.NVIM_DIR }}
 
-      - uses: actions-rust-lang/setup-rust-toolchain@v1
-      - run: cargo build --profile optimize
+      # - uses: actions-rust-lang/setup-rust-toolchain@v1
+      # - run: cargo build --profile optimize
 
       - run: echo ${{ github.workspace }}/target/optimize >> "$GITHUB_PATH"
         shell: bash
