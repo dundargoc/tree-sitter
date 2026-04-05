@@ -29,6 +29,7 @@ jobs:
       NVIM: ${{ matrix.os == 'windows-latest' && 'nvim-win64\\bin\\nvim.exe' || 'nvim' }}
       NVIM_DIR: neovim
       NVIM_TS_DIR: nvim-treesitter
+      INSTALL_PREFIX: ${{ github.workspace }}/nvim-install
     steps:
       - uses: actions/checkout@v6
       - name: Clone Neovim
@@ -39,10 +40,9 @@ jobs:
 
       - uses: actions-rust-lang/setup-rust-toolchain@v1
       - run: cargo build --profile optimize
-      - if: runner.os != 'Windows'
-        run: echo ${{ github.workspace }}/target/optimize >> "$GITHUB_PATH"
-      - if: runner.os == 'Windows'
-        run: echo ${{ github.workspace }}/target/optimize >> "$env:GITHUB_PATH"
+
+      - run: echo ${{ github.workspace }}/target/optimize >> "$GITHUB_PATH"
+        shell: bash
 
       - if: runner.os == 'Windows'
         run: ${{ env.NVIM_DIR }}/.github/scripts/env.ps1
@@ -52,10 +52,13 @@ jobs:
         run: |
           cmake -S cmake.deps -B .deps -G Ninja -D CMAKE_BUILD_TYPE=Release -D TREESITTER_URL=https://github.com/tree-sitter/tree-sitter/archive/${{ github.event.pull_request.head.sha }}.tar.gz -D DEPS_IGNORE_SHA=TRUE
           cmake --build .deps --config Release
-          cmake -B build -G Ninja -D CMAKE_BUILD_TYPE=Release
+          cmake -B build -G Ninja -D CMAKE_BUILD_TYPE=Release -D CMAKE_INSTALL_PREFIX:PATH="$INSTALL_PREFIX"
           cmake --build build --config Release
-          echo "VIMRUNTIME=${{ github.workspace }}/neovim/runtime" >> "$GITHUB_ENV"
-          echo ${{ github.workspace }}/neovim/build/bin >> "$GITHUB_PATH"
+          cmake --install build
+          # echo "VIMRUNTIME=${{ github.workspace }}/neovim/runtime" >> "$GITHUB_ENV"
+
+      - run: echo "$INSTALL_PREFIX/bin" >> "$GITHUB_PATH"
+        shell: bash
 
       - name: Clone nvim-treesitter
         uses: actions/checkout@v6
