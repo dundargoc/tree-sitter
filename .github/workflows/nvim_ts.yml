@@ -63,6 +63,7 @@ jobs:
       - run: ls "$INSTALL_PREFIX"
       - run: ls "$INSTALL_PREFIX/bin"
       - run: cat "$GITHUB_PATH"
+        shell: bash
 
       - name: Clone nvim-treesitter
         uses: actions/checkout@v6
