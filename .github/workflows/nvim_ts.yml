@@ -52,7 +52,7 @@ jobs:
         run: |
           cmake -S cmake.deps -B .deps -G Ninja -D CMAKE_BUILD_TYPE=Release -D TREESITTER_URL=https://github.com/tree-sitter/tree-sitter/archive/${{ github.event.pull_request.head.sha }}.tar.gz -D DEPS_IGNORE_SHA=TRUE
           cmake --build .deps --config Release
-          cmake -B build -G Ninja -D CMAKE_BUILD_TYPE=Release -D CMAKE_INSTALL_PREFIX:PATH="$INSTALL_PREFIX"
+          cmake -B build -G Ninja -D CMAKE_BUILD_TYPE=Release -D CMAKE_INSTALL_PREFIX:PATH=$INSTALL_PREFIX
           cmake --build build --config Release
           cmake --install build
           # echo "VIMRUNTIME=${{ github.workspace }}/neovim/runtime" >> "$GITHUB_ENV"
