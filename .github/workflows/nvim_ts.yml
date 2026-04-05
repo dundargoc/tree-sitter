@@ -26,7 +26,7 @@ jobs:
     name: ${{ matrix.os }} - ${{ matrix.type }}
     runs-on: ${{ matrix.os }}
     env:
-      NVIM: ${{ matrix.os == 'windows-latest' && 'nvim-win64\\bin\\nvim.exe' || 'nvim' }}
+      NVIM: ${{ matrix.os == 'windows-latest' && 'nvim.exe' || 'nvim' }}
       NVIM_DIR: neovim
       NVIM_TS_DIR: nvim-treesitter
       INSTALL_PREFIX: ${{ github.workspace }}/nvim-install
