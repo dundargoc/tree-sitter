@@ -42,20 +42,16 @@ jobs:
           ref: ${{ env.NVIM_TAG }}
           path: ${{ env.NVIM_DIR }}
 
-      - if: runner.os != 'Windows'
-        name: Setup environment (Posix)
+      - if: runner.os == 'Windows'
+        name: Setup environment
+        run: ${{ env.NVIM_DIR }}/.github/scripts/env.ps1
+
+      - name: Setup environment
+        shell: bash
         run: |
           echo ${{ github.workspace }}/target/optimize >> "$GITHUB_PATH"
           echo ${{ github.workspace }}/neovim/build/bin >> "$GITHUB_PATH"
           echo "VIMRUNTIME=${{ github.workspace }}/neovim/runtime" >> "$GITHUB_ENV"
-
-      - if: runner.os == 'Windows'
-        name: Setup environment (why can't you just be normal?!)
-        run: |
-          ${{ env.NVIM_DIR }}/.github/scripts/env.ps1
-          echo ${{ github.workspace }}/target/optimize >> "$env:GITHUB_PATH"
-          echo ${{ github.workspace }}/neovim/build/bin >> "$env:GITHUB_PATH"
-          echo "VIMRUNTIME=${{ github.workspace }}/neovim/runtime" >> "$env:GITHUB_ENV"
 
       - name: Build Neovim
         working-directory: ${{ env.NVIM_DIR }}
